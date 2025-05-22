@@ -7,11 +7,22 @@
     <link rel="icon" href="2024-06-11.png" type="image/x-icon" />
     <link rel="stylesheet" href="styles.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+      /* Optional: style the canvas container */
+      #logo-container {
+        text-align: center;
+        margin: 20px 0;
+      }
+    </style>
 </head>
 <body>
 
     <header>
-        <h1 class="glowing-text">Welcome to My Website!</h1>
+        <!-- Canvas Logo -->
+        <div id="logo-container">
+            <canvas id="logoCanvas" width="400" height="100"></canvas>
+        </div>
+        <h1>Welcome to My Website!</h1>
         <p>Get to know more about me and the test series I'm offering!</p>
     </header>
 
@@ -66,53 +77,109 @@
     </footer>
 
 <script>
-function sendEmail() {
-  let name = document.getElementById("name").value.trim();
-  let college = document.getElementById("college").value.trim();
-  let address = document.getElementById("address").value.trim();
-  let email = document.getElementById("email").value.trim();
-  let phone = document.getElementById("phone").value.trim();
+  // Logo Canvas Drawing & Animation
+  const canvas = document.getElementById('logoCanvas');
+  const ctx = canvas.getContext('2d');
 
-  if (!name || !college || !address || !email || !phone) {
-      document.getElementById("user-message").innerText = "Please fill out all fields!";
-      return;
+  let glowValue = 10;
+  let increasing = true;
+
+  function drawLogo() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.font = 'bold 48px Segoe UI, Tahoma, Geneva, Verdana, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    // Glow for "Saksham"
+    ctx.shadowColor = '#00cfff';
+    ctx.shadowBlur = glowValue;
+    ctx.fillStyle = '#007bff';
+    ctx.fillText('Saksham', canvas.width / 3, canvas.height / 2);
+
+    // Glow for "Rijal"
+    ctx.shadowColor = '#00ffff';
+    ctx.shadowBlur = glowValue + 10;
+    ctx.fillStyle = '#00e3ff';
+    ctx.fillText('Rijal', (canvas.width / 3) * 2, canvas.height / 2);
   }
 
-  // Generate PDF
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-  doc.setFontSize(14);
-  doc.text("Registration Details", 20, 20);
-  doc.text(`Full Name: ${name}`, 20, 40);
-  doc.text(`College Name: ${college}`, 20, 50);
-  doc.text(`Address: ${address}`, 20, 60);
-  doc.text(`Email: ${email}`, 20, 70);
-  doc.text(`Phone: ${phone}`, 20, 80);
+  function animateGlow() {
+    if (increasing) {
+      glowValue += 0.5;
+      if (glowValue > 40) increasing = false;
+    } else {
+      glowValue -= 0.5;
+      if (glowValue < 10) increasing = true;
+    }
+    drawLogo();
+    requestAnimationFrame(animateGlow);
+  }
 
-  // Add "stamp"
-  doc.setTextColor(255, 0, 0);
-  doc.setFontSize(20);
-  doc.text("✔ Verified by Saksham Rijal", 20, 110);
+  drawLogo();
+  animateGlow();
 
-  // Save PDF
-  doc.save(`Registration_${name}.pdf`);
+  // Email & PDF generation
+  function sendEmail() {
+    let name = document.getElementById("name").value.trim();
+    let college = document.getElementById("college").value.trim();
+    let address = document.getElementById("address").value.trim();
+    let email = document.getElementById("email").value.trim();
+    let phone = document.getElementById("phone").value.trim();
 
-  // Prepare mailto
-  let recipientEmail = "sakshamrijal07@gmail.com"; 
-  let subject = "New Registration Details";
-  let body = `Full Name: ${name}%0ACollege Name: ${college}%0AAddress: ${address}%0AEmail: ${email}%0APhone Number: ${phone}`;
+    if (!name || !college || !address || !email || !phone) {
+        document.getElementById("user-message").innerText = "Please fill out all fields!";
+        return;
+    }
 
-  // Open default email client
-  window.location.href = `mailto:${recipientEmail}?subject=${subject}&body=${body}`;
-}
+    // Generate PDF
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
 
-// Attach submit event listener to form after DOM loaded
-document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("registration-form").addEventListener("submit", function(event) {
-    event.preventDefault(); // Prevent form submission reload
-    sendEmail();
+    // NOTE: Replace this with your own Base64 image string or remove this if you don't have the logo in base64
+    // For now, we won't add the logo image to avoid errors
+    /*
+    const logoBase64 = 'data:image/webp;base64,YOUR_BASE64_STRING_HERE';
+    doc.addImage(logoBase64, 'WEBP', 150, 10, 40, 40);
+    */
+
+    doc.setFontSize(14);
+    doc.text("Registration Details", 20, 20);
+    doc.text(`Full Name: ${name}`, 20, 40);
+    doc.text(`College Name: ${college}`, 20, 50);
+    doc.text(`Address: ${address}`, 20, 60);
+    doc.text(`Email: ${email}`, 20, 70);
+    doc.text(`Phone: ${phone}`, 20, 80);
+
+    // Add "stamp" text
+    doc.setTextColor(255, 0, 0);
+    doc.setFontSize(20);
+    doc.text("✔ Verified by Saksham Rijal", 20, 110);
+
+    // Save PDF
+    doc.save(`Registration_${name}.pdf`);
+
+    // Prepare mailto
+    let recipientEmail = "sakshamrijal07@gmail.com"; 
+    let subject = "New Registration Details";
+    let body = `Full Name: ${name}%0ACollege Name: ${college}%0AAddress: ${address}%0AEmail: ${email}%0APhone Number: ${phone}`;
+
+    // Open default email client
+    window.location.href = `mailto:${recipientEmail}?subject=${subject}&body=${body}`;
+  }
+
+  // Attach submit event listener to form after DOM loaded
+  document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("registration-form").addEventListener("submit", function(event) {
+      event.preventDefault();
+      sendEmail();
+    });
   });
-});
+
+  // Placeholder for showPopup (since you have onclick="showPopup()" in profile-photo)
+  function showPopup() {
+    alert("Profile photo clicked! You can add more info or popup here.");
+  }
 </script>
 
 </body>
