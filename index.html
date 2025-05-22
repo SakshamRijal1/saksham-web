@@ -65,8 +65,8 @@
         <p>© 2025 Saksham Rijal. All rights reserved.</p>
     </footer>
 
+    <!-- JavaScript Starts -->
     <script>
-      <script>
     function sendEmail() {
         let name = document.getElementById("name").value.trim();
         let college = document.getElementById("college").value.trim();
@@ -79,7 +79,6 @@
             return;
         }
 
-        // Check Local Storage for duplicate
         let registeredUsers = JSON.parse(localStorage.getItem("registeredUsers")) || [];
         let alreadyRegistered = registeredUsers.some(user =>
             user.email === email || user.phone === phone
@@ -88,79 +87,66 @@
             document.getElementById("user-message").innerText = "This email or phone has already been registered!";
             return;
         }
+
         registeredUsers.push({ email, phone });
         localStorage.setItem("registeredUsers", JSON.stringify(registeredUsers));
 
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
 
-        // Title - Rainbow Effect
-        doc.setFontSize(20);
-        doc.setFont("helvetica", "bold");
-        doc.setTextColor(255, 0, 0); // Red
-        doc.text("R", 20, 20);
-        doc.setTextColor(255, 165, 0); // Orange
-        doc.text("e", 25, 20);
-        doc.setTextColor(255, 255, 0); // Yellow
-        doc.text("g", 30, 20);
-        doc.setTextColor(0, 128, 0); // Green
-        doc.text("i", 35, 20);
-        doc.setTextColor(0, 0, 255); // Blue
-        doc.text("s", 38, 20);
-        doc.setTextColor(75, 0, 130); // Indigo
-        doc.text("t", 43, 20);
-        doc.setTextColor(238, 130, 238); // Violet
-        doc.text("r", 47, 20);
-        doc.setTextColor(0, 0, 0); // Back to black
-        doc.text("ation Details", 52, 20);
+        // Rainbow Title
+        const title = "Registration Details";
+        const colors = [
+            [255, 0, 0], [255, 165, 0], [255, 255, 0],
+            [0, 128, 0], [0, 0, 255], [75, 0, 130],
+            [238, 130, 238]
+        ];
+        let x = 20;
+        for (let i = 0; i < title.length; i++) {
+            doc.setTextColor(...colors[i % colors.length]);
+            doc.setFontSize(20);
+            doc.setFont("helvetica", "bold");
+            doc.text(title[i], x, 20);
+            x += 5;
+        }
 
-        // Details with different colors
         doc.setFontSize(14);
-
-        doc.setTextColor(0, 102, 204); // Blue
+        doc.setTextColor(0, 102, 204);
         doc.text("Full Name:", 20, 40);
         doc.setTextColor(0, 0, 0);
         doc.text(name, 60, 40);
 
-        doc.setTextColor(204, 102, 0); // Brownish
+        doc.setTextColor(204, 102, 0);
         doc.text("College Name:", 20, 50);
         doc.setTextColor(0, 0, 0);
         doc.text(college, 60, 50);
 
-        doc.setTextColor(102, 204, 0); // Greenish
+        doc.setTextColor(102, 204, 0);
         doc.text("Address:", 20, 60);
         doc.setTextColor(0, 0, 0);
         doc.text(address, 60, 60);
 
-        doc.setTextColor(204, 0, 102); // Pinkish
+        doc.setTextColor(204, 0, 102);
         doc.text("Email:", 20, 70);
         doc.setTextColor(0, 0, 0);
         doc.text(email, 60, 70);
 
-        doc.setTextColor(102, 0, 204); // Purple
+        doc.setTextColor(102, 0, 204);
         doc.text("Phone:", 20, 80);
         doc.setTextColor(0, 0, 0);
         doc.text(phone, 60, 80);
 
-        // Stamp effect
         doc.setTextColor(255, 0, 0);
         doc.setFont("helvetica", "bolditalic");
         doc.setFontSize(22);
-        doc.setDrawColor(255, 0, 0);
-        doc.setLineWidth(1);
         doc.circle(150, 110, 25, 'S');
-
-        doc.saveGraphicsState();
-        doc.setGState(new doc.GState({ opacity: 0.7 }));
         doc.text("✔ Verified", 132, 108, { angle: -20 });
         doc.setFontSize(10);
         doc.text("by Saksham Rijal", 132, 115, { angle: -20 });
-        doc.restoreGraphicsState();
 
         doc.save(`Registration_${name}.pdf`);
 
-        // Email sending (opens mail client)
-        let recipientEmail = "sakshamrijal07@gmail.com"; 
+        let recipientEmail = "sakshamrijal07@gmail.com";
         let subject = "New Registration Details";
         let body = `Full Name: ${name}%0ACollege Name: ${college}%0AAddress: ${address}%0AEmail: ${email}%0APhone Number: ${phone}`;
         window.location.href = `mailto:${recipientEmail}?subject=${subject}&body=${body}`;
@@ -168,9 +154,6 @@
         document.getElementById("user-message").style.color = "green";
         document.getElementById("user-message").innerText = "Successfully registered!";
     }
-</script>
-
     </script>
-
 </body>
 </html>
