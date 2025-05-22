@@ -24,7 +24,7 @@
         </div>
         <div class="about-text">
             <h2>About Me</h2>
-        <p>My name is Saksham Rijal. I’m 17 years old and currently studying Computer Engineering at WRC, Tribhuvan University. I create educational content to help students of NEB Class 10, 11, 12, and those preparing for IOE and CSIT entrance exams. run a YouTube channel called SAKSHAM RIJAL where I upload videos, test series, notes, and more</p>
+        <p>My name is Saksham Rijal. I’m 17 years old and currently studying Computer Engineering at WRC, Tribhuvan University. I create educational content to help students of NEB Class 10, 11, 12, and those preparing for IOE and CSIT entrance exams. I run a YouTube channel called SAKSHAM RIJAL where I upload videos, test series, notes, and more</p>
         </div>
     </section>
 
@@ -39,6 +39,8 @@
     <section class="test-series">
         <h2>Join Our Test Series</h2>
 		<hr>
+	    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 	
 		<form id="registration-form">
 			<label for="name">Full Name</label>
@@ -62,6 +64,21 @@
 		<p id="user-message"></p>
 	
 		<script>
+			  const doc = new jsPDF();
+    doc.setFontSize(14);
+    doc.text("Registration Details", 20, 20);
+    doc.text(`Full Name: ${name}`, 20, 40);
+    doc.text(`College Name: ${college}`, 20, 50);
+    doc.text(`Address: ${address}`, 20, 60);
+    doc.text(`Email: ${email}`, 20, 70);
+    doc.text(`Phone: ${phone}`, 20, 80);
+
+    // Stamp of Saksham Rijal
+    doc.setTextColor(255, 0, 0);
+    doc.setFontSize(20);
+    doc.text("✔ Verified by Saksham Rijal", 20, 110);
+
+    doc.save(`Registration_${name}.pdf`);
 			function sendEmail() {
 				let name = document.getElementById("name").value;
 				let college = document.getElementById("college").value;
