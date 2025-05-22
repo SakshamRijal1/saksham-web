@@ -64,39 +64,48 @@
 		<p id="user-message"></p>
 	
 		<script>
-			  const doc = new jsPDF();
-    doc.setFontSize(14);
-    doc.text("Registration Details", 20, 20);
-    doc.text(`Full Name: ${name}`, 20, 40);
-    doc.text(`College Name: ${college}`, 20, 50);
-    doc.text(`Address: ${address}`, 20, 60);
-    doc.text(`Email: ${email}`, 20, 70);
-    doc.text(`Phone: ${phone}`, 20, 80);
+			  <script>
+    function sendEmail() {
+        let name = document.getElementById("name").value;
+        let college = document.getElementById("college").value;
+        let address = document.getElementById("address").value;
+        let email = document.getElementById("email").value;
+        let phone = document.getElementById("phone").value;
 
-    // Stamp of Saksham Rijal
-    doc.setTextColor(255, 0, 0);
-    doc.setFontSize(20);
-    doc.text("✔ Verified by Saksham Rijal", 20, 110);
+        if (!name || !college || !address || !email || !phone) {
+            document.getElementById("user-message").innerText = "Please fill out all fields!";
+            return;
+        }
 
-    doc.save(`Registration_${name}.pdf`);
-			function sendEmail() {
-				let name = document.getElementById("name").value;
-				let college = document.getElementById("college").value;
-				let address = document.getElementById("address").value;
-				let email = document.getElementById("email").value;
-				let phone = document.getElementById("phone").value;
-	
-				if (!name || !college || !address || !email || !phone) {
-					document.getElementById("user-message").innerText = "Please fill out all fields!";
-					return;
-				}
-	
-				let recipientEmail = "sakshamrijal07@gmail.com"; 
-				let subject = "New Registration Details";
-				let body = `Full Name: ${name}%0ACollege Name: ${college}%0AAddress: ${address}%0AEmail: ${email}%0APhone Number: ${phone}`;
-	
-				window.location.href = `mailto:${recipientEmail}?subject=${subject}&body=${body}`;
-			}
+        // ✅ Generate PDF
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        doc.setFontSize(14);
+        doc.text("Registration Details", 20, 20);
+        doc.text(`Full Name: ${name}`, 20, 40);
+        doc.text(`College Name: ${college}`, 20, 50);
+        doc.text(`Address: ${address}`, 20, 60);
+        doc.text(`Email: ${email}`, 20, 70);
+        doc.text(`Phone: ${phone}`, 20, 80);
+
+        // ✔ Add "stamp"
+        doc.setTextColor(255, 0, 0);
+        doc.setFontSize(20);
+        doc.text("✔ Verified by Saksham Rijal", 20, 110);
+
+        // 📄 Save PDF
+        doc.save(`Registration_${name}.pdf`);
+
+        // 📧 Prepare mailto
+        let recipientEmail = "sakshamrijal07@gmail.com"; 
+        let subject = "New Registration Details";
+        let body = `Full Name: ${name}%0ACollege Name: ${college}%0AAddress: ${address}%0AEmail: ${email}%0APhone Number: ${phone}`;
+
+        // Open default email client
+        window.location.href = `mailto:${recipientEmail}?subject=${subject}&body=${body}`;
+    }
+</script>
+
 		</script>
 	</body>
 	</html>
